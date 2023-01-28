@@ -25,7 +25,7 @@ namespace druckmessungsprotokoll
             using(StreamWriter sw = File.AppendText(this.FilePath))
             {
                 Console.WriteLine(message);
-                sw.WriteLine($"Log from {DateTime.Now.ToLongTimeString}, {DateTime.Now.ToShortDateString} - {message}");
+                sw.WriteLine($"Log from {DateTime.Now.ToLongTimeString()}, {DateTime.Now.ToShortDateString()} - {message}");
             }
         }
 
