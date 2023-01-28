@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "druckmessungsprotokoll", "druckmessungsprotokoll.csproj", "{AAC15CA8-8726-4347-A118-AAE3DD2F614F}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "druckmessungsprotokoll.setup", "..\druckmessungsprotokoll.setup\druckmessungsprotokoll.setup.wixproj", "{104C0A14-D06C-4D24-9E0C-CAF06507F882}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,14 +21,6 @@ Global
 		{AAC15CA8-8726-4347-A118-AAE3DD2F614F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAC15CA8-8726-4347-A118-AAE3DD2F614F}.Release|x86.ActiveCfg = Release|Any CPU
 		{AAC15CA8-8726-4347-A118-AAE3DD2F614F}.Release|x86.Build.0 = Release|Any CPU
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Debug|Any CPU.Build.0 = Debug|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Debug|x86.ActiveCfg = Debug|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Debug|x86.Build.0 = Debug|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Release|Any CPU.ActiveCfg = Release|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Release|Any CPU.Build.0 = Release|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Release|x86.ActiveCfg = Release|x86
-		{104C0A14-D06C-4D24-9E0C-CAF06507F882}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
