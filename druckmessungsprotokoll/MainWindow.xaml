@@ -1,0 +1,42 @@
+﻿<Window x:Class="druckmessungsprotokoll.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:druckmessungsprotokoll"
+        mc:Ignorable="d"
+        Title="Blutdruckprotokoll" Height="450" Width="800">
+    <Grid Margin="5,5,5,5">
+        <Label Content="Blutdruckwerte" FontSize="25" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" Height="47" Width="193"/>
+
+        <TextBlock Text="Systolischer Blutdruck" HorizontalAlignment="Left" Margin="144,91,0,0" VerticalAlignment="Top" Height="19" Width="194"/>
+        <TextBox Name="tb_sys" HorizontalAlignment="Left" Margin="430,91,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="202" Height="19"/>
+
+        <TextBlock Text="Diastolischer Blutdruck" HorizontalAlignment="Left" Margin="144,129,0,0" VerticalAlignment="Top" Height="20" Width="203"/>
+        <TextBox Name="tb_dia" HorizontalAlignment="Left" Margin="430,129,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="202" Height="20"/>
+
+        <TextBlock Text="Puls" HorizontalAlignment="Left" Margin="144,165,0,0" VerticalAlignment="Top" Height="19" Width="36"/>
+        <TextBox Name="tb_puls" HorizontalAlignment="Left" Margin="430,165,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="202" Height="21"/>
+
+        <TextBlock Text="Pulsdruck" HorizontalAlignment="Left" Margin="144,199,0,0" VerticalAlignment="Top" Height="20" Width="86"/>
+        <TextBox Name="tb_pulsdruck" HorizontalAlignment="Left" Margin="430,199,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="202" Height="20"/>
+
+        <TextBlock HorizontalAlignment="Left" Margin="144,234,0,0" VerticalAlignment="Top" Height="20" Width="60"><Run Language="de-de" Text="Datum"/></TextBlock>
+        <DatePicker Name="dp_dt" HorizontalAlignment="Left" Margin="430,234,0,0" VerticalAlignment="Top" Width="202" Height="20"/>
+
+        <TextBlock HorizontalAlignment="Left" Margin="144,267,0,0" VerticalAlignment="Top" Height="20" Width="64"><Run Language="de-de" Text="Uhrzeit"/></TextBlock>
+        <TextBox Name="tb_time" HorizontalAlignment="Left" Margin="430,267,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="202" Height="20"/>
+
+        <Button Content="Speichern" Height="27" Width="101" HorizontalAlignment="Left" Margin="531,304,0,0" VerticalAlignment="Top" Click="AddMeassurementButtonClick"/>
+        <Button Content="Drucken" Height="27" Width="101" HorizontalAlignment="Left" Margin="531,339,0,0" VerticalAlignment="Top" Click="PrintButtonClick"/>
+
+
+
+
+
+
+
+
+
+    </Grid>
+</Window>
