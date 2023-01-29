@@ -9,15 +9,18 @@ namespace druckmessungsprotokoll
 {
     internal class Logger
     {
-        private string CurrentDirectory { get; set; }
+        private string Directory { get; set; }
         private string FileName { get; set; }  
         private string FilePath { get; set; }
 
         public Logger()
         {
-            this.CurrentDirectory = Directory.GetCurrentDirectory();
+            this.Directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "BlutdruckmessungApp");
             this.FileName = "Log.txt";
-            this.FilePath = Path.Combine(CurrentDirectory, this.FileName);
+            this.FilePath = Path.Combine(this.Directory, this.FileName);
+            
         }
 
         public void Log(string message)

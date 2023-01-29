@@ -3,10 +3,8 @@ using System.Windows;
 using Word = Microsoft.Office.Interop.Word;
 using System.IO;
 using System.Reflection;
-using Syncfusion.DocIO.DLS;
-using Syncfusion.DocIO;
 using System.Configuration;
-using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Word;
 
 namespace druckmessungsprotokoll
 {
@@ -41,6 +39,7 @@ namespace druckmessungsprotokoll
         {
             InitializeComponent();
             PrepareDirectories();
+            CreateTemplateFile();
 
             try
             {
@@ -49,7 +48,7 @@ namespace druckmessungsprotokoll
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                logger.Log(ex.Message);
             }
         }
         /**
@@ -60,7 +59,110 @@ namespace druckmessungsprotokoll
         private void PrepareDirectories()
         {
             Directory.CreateDirectory(_userDirectory);
+       
             Directory.CreateDirectory(_appDirectory);
+        }
+
+        /**
+         * <summary>
+         * Creates template file
+         * </summary>
+         */
+        private void CreateTemplateFile()
+        {
+            if (File.Exists(_templateFilePath))
+            {
+                return; 
+            }
+            var file = File.Create(_templateFilePath);
+            file.Close();
+            
+            object read_only = false;
+            object isVisible = false;
+            wordApp.Visible = false;
+
+            doc = wordApp.Documents.Open(_templateFilePath, read_only, isVisible);
+
+            object missing = Missing.Value;
+            object oEndOfDoc = "\\endofdoc";
+            
+            Word.Paragraph header;
+
+            header = doc.Content.Paragraphs.Add(ref missing);
+            header.Range.Text = "Blutdruckmessungsprotokoll";
+            header.Range.Font.Bold = 1;
+            header.Range.Font.Size = 20;
+            header.Range.Font.Name = "Bahnschrift";
+            header.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+            header.Range.InsertParagraphAfter();
+            
+            Word.Range wrdRng = doc.Bookmarks.get_Item(ref oEndOfDoc).Range;
+            Word.Table table = doc.Tables.Add(wrdRng, 20, 5);
+            table.Range.Font.Name = "Bahnschrift";
+            table.Borders.InsideLineStyle = WdLineStyle.wdLineStyleSingle;
+            table.Borders.OutsideLineStyle = WdLineStyle.wdLineStyleSingle;
+
+            int r, c;
+            for (r = 1; r <= 20; r++)
+            {
+                for (c = 1; c <= 5; c++)
+                {
+                    if (r == 1)
+                    {
+                        switch (c)
+                        {
+                            case 1:
+                                table.Cell(r, c).Range.Text = "Datum / Uhrzeit";
+                                break;
+                            case 2:
+                                table.Cell(r, c).Range.Text = "SYS mmHgg";
+                                break;
+                            case 3:
+                                table.Cell(r, c).Range.Text = "DIA mmH";
+                                break;
+                            case 4:
+                                table.Cell(r, c).Range.Text = "Puls 1/min";
+                                break;
+                            case 5:
+                                table.Cell(r, c).Range.Text = "Pulsdruck mmHg";
+                                break;                
+                                        
+                        }
+                        table.Rows[1].Range.Font.Bold = 1;
+                        table.Rows[1].Alignment = WdRowAlignment.wdAlignRowLeft;
+                        table.Rows[1].Range.Font.Size = 12;
+                        table.Rows[1].Range.Font.Color = WdColor.wdColorGreen;
+                    }
+                    else
+                    {
+                        switch (c)
+                        {
+                            case 1:
+                                table.Cell(r, c).Range.Text = "<date>, <time>";
+                                break;
+                            case 2:
+                                table.Cell(r, c).Range.Text = "<sys>";
+                                break;
+                            case 3:
+                                table.Cell(r, c).Range.Text = "<dia>";
+                                break;
+                            case 4:
+                                table.Cell(r, c).Range.Text = "<puls>";
+                                break;
+                            case 5:
+                                table.Cell(r, c).Range.Text = "<pulsdruck>";
+                                break;
+                        }
+                        table.Rows[r].Range.Font.Size = 11;
+                        table.Rows[r].Alignment = WdRowAlignment.wdAlignRowLeft;
+                        table.Rows[r].Range.Font.Color = WdColor.wdColorBlack;
+                    }
+                }
+
+            }
+
+            doc.Save();
+            doc.Close();
         }
 
         /**
@@ -70,12 +172,14 @@ namespace druckmessungsprotokoll
          */
         private void CopyTemplateFile()
         {
-            File.Copy(_templateFilePath,_protocolFilePath);
+
+            File.Copy(_templateFilePath, _protocolFilePath);
+      
         }
 
         /**
          * <summary>
-         * Finds text in Word Document and replace it with the value from user input
+         * Finds text in Word Document and replace it with the values based on user input
          * </summary>
          */
         private void FindAndReplaceText(object ExistingText, object ReplaceText, int replaceMode)
@@ -102,15 +206,17 @@ namespace druckmessungsprotokoll
                                             ref matchAlefHamza, ref matchControl);
 
         }
-        
+
         /**
          * <summary>
-         * Adds input data to the Word document
+         * Opens file with user's measurements and
+         * calls method FindAndReplaceText() to add
+         * new input data to the Word document
          * </summary>
          */
         private void AddMeasurement()
         {
-           
+
             object missing = Missing.Value;
 
             if (!File.Exists(_protocolFilePath))
@@ -118,35 +224,42 @@ namespace druckmessungsprotokoll
                 MessageBox.Show("Datei nicht gefünden");
                 return;
             }
+
+            object read_only = false;
+            object isVisible = false;
+            wordApp.Visible = false;
+            try
+            {
+                doc = wordApp.Documents.Open(_protocolFilePath, ref read_only, ref isVisible);
+                //doc.Activate();
+
+                if (dp_dt.SelectedDate != null)
+                {
+                    FindAndReplaceText("<date>", dp_dt.SelectedDate.Value.ToShortDateString(), 1);
+                    FindAndReplaceText("<time>", tb_time.Text, 1);
+                    FindAndReplaceText("<sys>", tb_sys.Text, 1);
+                    FindAndReplaceText("<dia>", tb_dia.Text, 1);
+                    FindAndReplaceText("<puls>", tb_puls.Text, 1);
+                    FindAndReplaceText("<pulsdruck>", tb_pulsdruck.Text, 1);
+
+                    doc.Save();
+
+                }
+                else
+                {
+                    logger.Log("Input: Datumfeld ist leer");
+                    MessageBox.Show("Feld Datum kann nicht leer sein");
+                }
                 
-            object read_only = true;
-            object isVisible = true;
-            wordApp.Visible = true;
+                doc.Close();
 
-            doc = wordApp.Documents.Open(_protocolFilePath, ref read_only, ref isVisible);
-            doc.Activate();
-
-            if (dp_dt.SelectedDate != null)
-            {
-                FindAndReplaceText("<date>", dp_dt.SelectedDate.Value.ToShortDateString(), 1);
-                FindAndReplaceText("<time>", tb_time.Text, 1);
-                FindAndReplaceText("<sys>", tb_sys.Text, 1);
-                FindAndReplaceText("<dia>", tb_dia.Text, 1);
-                FindAndReplaceText("<puls>", tb_puls.Text, 1);
-                FindAndReplaceText("<pulsdruck>", tb_pulsdruck.Text, 1); 
-                    
+                MessageBox.Show("Datei wurde erstelt");
             }
-            else
+            catch (Exception ex)
             {
-                logger.Log("Input: Datumfeld ist leer");
-                MessageBox.Show("Feld Datum kann nicht leer sein");
+                MessageBox.Show(ex.Message);
             }
-            doc.Save();
-            
-            doc.Close();
-            
-            MessageBox.Show("Datei wurde erstelt");
-
+         
         }
         /**
          * <summary>
@@ -162,14 +275,13 @@ namespace druckmessungsprotokoll
             }
 
             object missing = Missing.Value;
-            object read_only = true;
-            object isVisible = true;
+            object read_only = false;
+            object isVisible = false;
             wordApp.Visible = false;
             
             try
             {   
                 doc = wordApp.Documents.Open(_protocolFilePath, ref read_only, ref isVisible);
-                doc.Activate();
 
                 FindAndReplaceText("<date>, <time>", "", 2);
                 FindAndReplaceText("<sys>", "", 2);
@@ -181,9 +293,10 @@ namespace druckmessungsprotokoll
                                         ref missing, ref missing, ref missing, ref missing, ref missing,
                                         ref missing, ref missing, ref missing, ref missing, ref missing
                                         , ref missing, ref missing);
-
-                doc.PrintOut();
                 doc.Close();
+                doc = wordApp.Documents.Open(_printFilePath, ref read_only, ref isVisible);
+                
+                doc.PrintOut();
                 
                 Console.WriteLine("Datei bereit zu drucken");
                 logger.Log("Datei bereit zu drucken");
@@ -193,7 +306,11 @@ namespace druckmessungsprotokoll
                 MessageBox.Show("Datei wurde nicht gedruckt");
                 logger.Log(ex.Message);
                
-            }      
+            }
+            finally
+            {
+                doc.Close();
+            }
         }
 
         private void AddMeassurementButtonClick(object sender, RoutedEventArgs e)
@@ -204,6 +321,11 @@ namespace druckmessungsprotokoll
         private void PrintButtonClick(object sender, RoutedEventArgs e)
         {
             PrintProtocol();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            wordApp.Quit();
         }
     }
 }
