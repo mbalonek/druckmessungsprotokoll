@@ -243,6 +243,7 @@ namespace druckmessungsprotokoll
                     FindAndReplaceText("<pulsdruck>", tb_pulsdruck.Text, 1);
 
                     doc.Save();
+                    MessageBox.Show("Datei wurde erstelt");
 
                 }
                 else
@@ -253,7 +254,7 @@ namespace druckmessungsprotokoll
                 
                 doc.Close();
 
-                MessageBox.Show("Datei wurde erstelt");
+                
             }
             catch (Exception ex)
             {
